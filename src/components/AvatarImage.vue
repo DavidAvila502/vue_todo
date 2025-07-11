@@ -1,9 +1,9 @@
 <script setup lang="ts">
-const props = defineProps<{ src: string }>()
+const props = defineProps<{ localImage?: string; solidColor: string; remoteImage?: string }>()
 </script>
 
 <template>
-  <img :src="props.src" alt="crow.png" />
+  <img :src="props.localImage" alt="crow.png" />
 </template>
 
 <style scoped>

@@ -1,11 +1,11 @@
 <template>
-  <div class="main-container">
+  <div class="home-main-container">
     <p>Hello world</p>
   </div>
 </template>
 
 <style scoped>
-.main-container {
+.home-main-container {
   min-height: 100vh;
 }
 </style>
