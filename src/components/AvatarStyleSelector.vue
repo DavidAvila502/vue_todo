@@ -47,8 +47,8 @@ const isSelected = computed(() => {
   border-radius: 100%;
   width: 120px;
   height: 120px;
-  background-color: aqua;
   cursor: pointer;
+  border: 3px solid black;
 }
 
 .avatar-style-image {
@@ -58,7 +58,6 @@ const isSelected = computed(() => {
 }
 
 .selected {
-  border: 2px solid #39e58c;
-  padding: 2px;
+  border: 3px solid #39e58c;
 }
 </style>

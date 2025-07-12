@@ -3,10 +3,11 @@
     <p class="main-title">Create a profile</p>
 
     <p class="section-title">Choose a style</p>
-    <div class="picture-selector-container">
+    <div class="profile-style-container">
+      <!-- select a local image -->
       <p class="section-title">Local image:</p>
 
-      <div class="picture-container">
+      <div class="style-selectors-container">
         <AvatarStyleSelector
           v-for="(data, index) in avatarSelectorData"
           :key="index"
@@ -17,9 +18,9 @@
           @update-profile="onUpdateProfile"
         />
       </div>
-
+      <!-- pick a solid color -->
       <p class="section-title">Pick a color:</p>
-      <div class="picture-container">
+      <div class="style-selectors-container">
         <AvatarStyleSelector
           v-for="(data, index) in avatarSelectorData"
           :index="index"
@@ -30,6 +31,21 @@
           @update-profile="onUpdateProfile"
         />
       </div>
+      <!-- Enter a name -->
+      <form @submit.prevent="handleSubmit" class="profile-form">
+        <label for="profile-name" class="section-title">Enter a profile name:</label>
+        <input
+          id="profile-name"
+          class="profile-name-input"
+          type="text"
+          placeholder="Profile name"
+          v-model="profileData.profileName"
+        />
+
+        <button class="profile-form-button" type="submit">Accept</button>
+
+        <p v-if="submitted" class="profile-created-text">¡Profile created!</p>
+      </form>
     </div>
   </div>
 </template>
@@ -62,6 +78,13 @@ const profileData = ref<ProfileData>({
 const onUpdateProfile = (newProfileData: ProfileData) => {
   profileData.value = newProfileData
 }
+
+const submitted = ref<boolean>(false)
+
+const handleSubmit = () => {
+  console.log('saved profile: ', profileData.value)
+  submitted.value = true
+}
 </script>
 
 <style scoped>
@@ -79,14 +102,19 @@ const onUpdateProfile = (newProfileData: ProfileData) => {
   margin-top: 20px;
 }
 
-.picture-selector-container {
+.profile-style-container {
   max-width: 1280px;
   width: 100%;
   min-height: 200px;
   margin: 0 auto;
   border-radius: 20px;
   border: 1px solid #2d323b;
-  padding: 10px;
+  padding: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .section-title {
@@ -100,10 +128,48 @@ const onUpdateProfile = (newProfileData: ProfileData) => {
   margin-bottom: 10px;
 }
 
-.picture-container {
+.style-selectors-container {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   gap: 25px;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  gap: 20px;
+}
+
+.profile-name-input {
+  font-size: 22px;
+  font-family: 'Roboto Mono', monospace;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  padding: 8px;
+}
+
+.profile-name-input:focus {
+  outline: none;
+  border: 1px solid #39e58c;
+}
+.profile-form-button {
+  width: 200px;
+  margin: 0 auto;
+  background-color: transparent;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 20px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border: 1px solid #2d323b;
+}
+
+.profile-created-text {
+  color: #39e58c;
+  font-size: 20px;
+  text-align: center;
 }
 </style>
