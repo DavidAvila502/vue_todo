@@ -1,14 +1,3 @@
-<template>
-  <div
-    @click="setNewProfileData"
-    class="avatar-style-selector-main-container"
-    :class="{ selected: isSelected }"
-    :style="{ backgroundColor: props.color }"
-  >
-    <img class="avatar-style-image" v-if="localImage" :src="localImage" :alt="index.toString()" />
-  </div>
-</template>
-
 <script setup lang="ts">
 import type { ProfileData } from '@/types/types'
 import { computed } from 'vue'
@@ -38,6 +27,17 @@ const isSelected = computed(() => {
   return props.profileData[property] === value
 })
 </script>
+
+<template>
+  <div
+    @click="setNewProfileData"
+    class="avatar-style-selector-main-container"
+    :class="{ selected: isSelected }"
+    :style="{ backgroundColor: props.color }"
+  >
+    <img class="avatar-style-image" v-if="localImage" :src="localImage" :alt="index.toString()" />
+  </div>
+</template>
 
 <style scoped>
 .avatar-style-selector-main-container {
