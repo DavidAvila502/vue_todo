@@ -7,6 +7,9 @@ import whale from '@/assets/images/whale.png'
 import AvatarStyleSelector from '@/components/AvatarStyleSelector.vue'
 import type { ProfileData } from '@/types/types'
 import { computed, ref } from 'vue'
+import { useProfilesStore } from '@/stores/profiles'
+
+const { profiles, addProfile } = useProfilesStore()
 
 const avatarSelectorData: { image: string; color: string }[] = [
   { image: crowImage, color: '#003547' },
@@ -42,7 +45,14 @@ const onUpdateProfile = (newProfileData: ProfileData) => {
 const submitted = ref<boolean>(false)
 
 const handleSubmit = () => {
-  console.log('saved profile: ', profileData.value)
+  const isNameTaken: boolean = profiles.some((p) => p.profileName == profileData.value.profileName)
+
+  if (isNameTaken) {
+    alert('El nombre de perfil ya fue tomado.')
+    return
+  }
+
+  addProfile(profileData.value)
   submitted.value = true
 }
 </script>
