@@ -1,8 +1,19 @@
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+
+const props = defineProps<{ routesData: { labelRoute: string; route: string }[] }>()
+</script>
+
 <template>
   <nav>
     <div class="link-container">
-      <RouterLink class="link" to="/">Profiles</RouterLink>
-      <RouterLink class="link" to="/create-profile">Create profile</RouterLink>
+      <RouterLink
+        class="link"
+        v-for="(route, index) in props.routesData"
+        :key="index"
+        :to="route.route"
+        >{{ route.labelRoute }}</RouterLink
+      >
     </div>
   </nav>
 </template>

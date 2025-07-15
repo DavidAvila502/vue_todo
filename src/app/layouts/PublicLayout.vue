@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import MainNavbar from '@/components/MainNavbar.vue'
 import { RouterView } from 'vue-router'
+
+const publicRoutesData = [
+  { labelRoute: 'profiles', route: '/' },
+  { labelRoute: 'create profile', route: '/create-profile' },
+]
 </script>
 
 <template>
   <header>
-    <MainNavbar />
+    <MainNavbar :routes-data="publicRoutesData" />
   </header>
 
   <main>

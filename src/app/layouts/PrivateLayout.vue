@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import MainNavbar from '@/components/MainNavbar.vue'
 import { RouterView } from 'vue-router'
+
+const privateLayoutRoutesData = [
+  { labelRoute: 'Tasks', route: '/app' },
+  { labelRoute: 'My profile', route: '/my-profile' },
+]
 </script>
 
 <template>
   <header>
-    <MainNavbar />
+    <MainNavbar :routes-data="privateLayoutRoutesData" />
   </header>
 
   <main>

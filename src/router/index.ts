@@ -28,7 +28,7 @@ const router = createRouter({
           component: PrivateLayout,
           children: [
             { path: '', name: 'tasks', component: TasksView },
-            { path: 'my-profile', name: 'my-profile', component: MyProfileView },
+            { path: '/my-profile', name: 'my-profile', component: MyProfileView },
           ],
         },
       ],
