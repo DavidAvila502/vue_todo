@@ -1,9 +1,15 @@
 <script setup lang="ts">
-const props = defineProps<{ profileImage: string; profileName: string }>()
+const props = defineProps<{ profileImage: string; profileName: string; profileId: number }>()
+
+const emit = defineEmits<{ (e: 'set-profile', data: number): void }>()
+
+const setProfile = () => {
+  emit('set-profile', props.profileId)
+}
 </script>
 
 <template>
-  <div class="profile-selector-main-container">
+  <div @click="setProfile" class="profile-selector-main-container">
     <img class="profile-selector-image" :src="props.profileImage" :alt="profileName + '.png'" />
 
     <p class="profile-name">{{ props.profileName }}</p>

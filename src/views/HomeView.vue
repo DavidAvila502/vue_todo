@@ -1,15 +1,32 @@
 <script setup lang="ts">
 import ProfileSelector from '@/components/ProfileSelector.vue'
+import { useCurrentProfileStore } from '@/stores/currentProfile'
 import { useProfilesStore } from '@/stores/profiles'
+import { useRouter } from 'vue-router'
 
 const { profiles } = useProfilesStore()
+const { loginWithProfile } = useCurrentProfileStore()
+const router = useRouter()
+
+function setProfile(profileId: number) {
+  const selectedProfile = profiles.find((p) => p.id! == profileId)
+
+  if (selectedProfile) {
+    loginWithProfile(selectedProfile)
+    router.replace('/app')
+    return
+  }
+
+  alert('El perfil seleccionado no existe...')
+  console.warn('El perfil seleccionado no existe...')
+}
 </script>
 
 <template>
   <div class="home-main-container">
     <p class="main-title">Profiles</p>
 
-    <seciton class="section-profile-selector">
+    <section class="section-profile-selector">
       <p class="section-title">Select a profile</p>
 
       <div class="profile-selector-container">
@@ -18,9 +35,11 @@ const { profiles } = useProfilesStore()
           :key="index"
           :profile-image="profileData.localImage!"
           :profile-name="profileData.profileName!"
+          :profile-id="profileData.id!"
+          @set-profile="setProfile"
         />
       </div>
-    </seciton>
+    </section>
   </div>
 </template>
 
@@ -30,7 +49,6 @@ const { profiles } = useProfilesStore()
   max-width: 1536px;
   margin: 0 auto;
   padding: 10px;
-  /* background-color: aliceblue; */
 }
 
 .main-title {
@@ -49,6 +67,9 @@ const { profiles } = useProfilesStore()
   align-items: center;
   justify-content: center;
   margin-top: 40px;
+  border: 1px solid #2d323b;
+  padding: 20px;
+  border-radius: 20px;
 }
 
 .section-title {
@@ -57,7 +78,6 @@ const { profiles } = useProfilesStore()
   margin: 0 auto;
   font-family: 'Roboto Mono', monospace;
   font-size: 20px;
-  margin-top: 20px;
   margin-bottom: 10px;
 }
 
@@ -67,5 +87,6 @@ const { profiles } = useProfilesStore()
   align-items: center;
   justify-content: center;
   margin-top: 40px;
+  gap: 25px;
 }
 </style>
