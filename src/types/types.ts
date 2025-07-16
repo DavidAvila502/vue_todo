@@ -5,3 +5,10 @@ export interface ProfileData {
   remoteImage: string | null
   profileName: string | null
 }
+
+export interface Task {
+  id: number
+  profileId: number
+  isCompleted: boolean
+  description: string
+}
