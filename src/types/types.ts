@@ -7,7 +7,7 @@ export interface ProfileData {
 }
 
 export interface Task {
-  id: number
+  id?: number
   profileId: number
   isCompleted: boolean
   description: string

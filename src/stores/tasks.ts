@@ -42,6 +42,12 @@ export const useTasksStore = defineStore('tasks', () => {
     if (task) task.isCompleted = false
   }
 
+  function getTasksFromProfile(profileId: number): Task[] {
+    const tasks = allTasks.value[profileId]
+    if (!tasks) return []
+    return tasks
+  }
+
   watch(
     allTasks.value,
     (newTasksData) => {
@@ -54,5 +60,5 @@ export const useTasksStore = defineStore('tasks', () => {
     { deep: true },
   )
 
-  return { allTasks, createTask, deleteTask, completeTask, unCompleteTask }
+  return { allTasks, createTask, deleteTask, completeTask, unCompleteTask, getTasksFromProfile }
 })
