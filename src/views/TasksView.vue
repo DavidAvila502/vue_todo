@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import TaskListItem from '@/components/TaskListItem.vue'
 import { useCurrentProfileStore } from '@/stores/currentProfile'
 import { useTasksStore } from '@/stores/tasks'
 import type { Task } from '@/types/types'
 import { computed, ref } from 'vue'
 
 const { currentProfile } = useCurrentProfileStore()
-const { getTasksFromProfile, createTask } = useTasksStore()
+const { getTasksFromProfile, createTask, deleteTask, updateTaskDescription } = useTasksStore()
 
 const profileColor: string = currentProfile?.solidColor ? currentProfile.solidColor : '#39e58c'
 
@@ -40,9 +41,20 @@ const filterData = computed(() => {
 const onCreateTask = () => {
   if (!currentProfile?.id) return
 
-  console.log(createTaskData.value)
   createTask({ ...createTaskData.value }, currentProfile.id)
   createTaskData.value.description = ''
+}
+
+const onDeleteTask = (taskId: number) => {
+  if (!currentProfile?.id) return
+
+  deleteTask(taskId, currentProfile.id)
+}
+
+const onUpdateTaskDescription = (newDescription: string, taskId: number) => {
+  if (!currentProfile?.id) return
+
+  updateTaskDescription(newDescription, taskId, currentProfile.id)
 }
 </script>
 
@@ -96,9 +108,14 @@ const onCreateTask = () => {
       </div>
 
       <div class="tasks-list-container">
-        <div v-for="(currentTask, index) in filterData" :key="index">
-          {{ currentTask }}
-        </div>
+        <TaskListItem
+          v-for="(task, index) in filterData"
+          :task="task"
+          :key="index"
+          :profile-color="profileColor"
+          @on-delete="onDeleteTask"
+          @on-update-description="onUpdateTaskDescription"
+        />
       </div>
     </div>
   </div>
@@ -124,7 +141,6 @@ const onCreateTask = () => {
 .tasks-container-header {
   padding: 8px;
   width: 100%;
-  background-color: blue;
   border-top-right-radius: 20px;
   border-top-left-radius: 20px;
   height: 60px;
@@ -202,5 +218,13 @@ const onCreateTask = () => {
   width: 80%;
   margin: 0 auto;
   margin-top: 30px;
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom: 20px;
+  height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

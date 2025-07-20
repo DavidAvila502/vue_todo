@@ -19,6 +19,18 @@ export const useTasksStore = defineStore('tasks', () => {
     if (!allTasks.value[profileId]) {
       allTasks.value[profileId] = []
     }
+
+    const listSize = allTasks.value[profileId].length
+    const lastTask: Task | undefined = allTasks.value[profileId][listSize - 1]
+    const lastID: number | undefined = lastTask ? lastTask.id : undefined
+
+    if (!lastID) {
+      newTask.id = 1
+      allTasks.value[profileId].push(newTask)
+      return
+    }
+
+    newTask.id = lastID + 1
     allTasks.value[profileId].push(newTask)
   }
 
@@ -42,6 +54,16 @@ export const useTasksStore = defineStore('tasks', () => {
     if (task) task.isCompleted = false
   }
 
+  function updateTaskDescription(taskDescription: string, taskId: number, profileId: number) {
+    const tasks = allTasks.value[profileId]
+    if (!tasks) return
+
+    const task = allTasks.value[profileId].find((currentT) => currentT.id == taskId)
+    if (!task) return
+
+    task.description = taskDescription
+  }
+
   function getTasksFromProfile(profileId: number): Task[] {
     const tasks = allTasks.value[profileId]
     if (!tasks) return []
@@ -60,5 +82,13 @@ export const useTasksStore = defineStore('tasks', () => {
     { deep: true },
   )
 
-  return { allTasks, createTask, deleteTask, completeTask, unCompleteTask, getTasksFromProfile }
+  return {
+    allTasks,
+    createTask,
+    deleteTask,
+    completeTask,
+    unCompleteTask,
+    updateTaskDescription,
+    getTasksFromProfile,
+  }
 })
