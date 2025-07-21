@@ -6,7 +6,14 @@ import type { Task } from '@/types/types'
 import { computed, ref } from 'vue'
 
 const { currentProfile } = useCurrentProfileStore()
-const { getTasksFromProfile, createTask, deleteTask, updateTaskDescription } = useTasksStore()
+const {
+  getTasksFromProfile,
+  createTask,
+  deleteTask,
+  updateTaskDescription,
+  completeTask,
+  unCompleteTask,
+} = useTasksStore()
 
 const profileColor: string = currentProfile?.solidColor ? currentProfile.solidColor : '#39e58c'
 
@@ -30,10 +37,10 @@ const filterData = computed(() => {
   if (filterParams.value.all) return profileAllTasks.value
 
   if (filterParams.value.completed)
-    return profileAllTasks.value.filter((task) => task.isCompleted == true)
+    return profileAllTasks.value.filter((task) => task.isCompleted === true)
 
   if (filterParams.value.pending)
-    return profileAllTasks.value.filter((task) => task.isCompleted == false)
+    return profileAllTasks.value.filter((task) => task.isCompleted === false)
 
   return []
 })
@@ -55,6 +62,17 @@ const onUpdateTaskDescription = (newDescription: string, taskId: number) => {
   if (!currentProfile?.id) return
 
   updateTaskDescription(newDescription, taskId, currentProfile.id)
+}
+
+const onToggleCheck = (taskID: number, checkState: boolean) => {
+  if (!currentProfile?.id) return
+
+  if (!checkState) {
+    unCompleteTask(taskID, currentProfile.id)
+    return
+  }
+
+  completeTask(taskID, currentProfile.id)
 }
 </script>
 
@@ -115,6 +133,7 @@ const onUpdateTaskDescription = (newDescription: string, taskId: number) => {
           :profile-color="profileColor"
           @on-delete="onDeleteTask"
           @on-update-description="onUpdateTaskDescription"
+          @on-toggle-check="onToggleCheck"
         />
       </div>
     </div>

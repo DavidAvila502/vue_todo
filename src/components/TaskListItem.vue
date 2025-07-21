@@ -2,16 +2,22 @@
 import type { Task } from '@/types/types'
 import TrashIcon from './icons/TrashIcon.vue'
 import EditIcon from './icons/EditIcon.vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import CheckIcon from './icons/CheckIcon.vue'
 
 const props = defineProps<{ task: Task; profileColor?: string }>()
 const emit = defineEmits<{
   (e: 'on-delete', taskId: number): void
   (e: 'on-update-description', newDescription: string, taskId: number): void
+  (e: 'on-toggle-check', taskId: number, checkState: boolean): void
 }>()
 
 const taskDescription = ref<string>(props.task.description)
+
+watch(
+  () => props.task.description,
+  (newDescriptionValue) => (taskDescription.value = newDescriptionValue),
+)
 
 const isEditing = ref<boolean>(false)
 
@@ -29,24 +35,32 @@ const onUpdateDescription = () => {
 
 const customColor = props.profileColor ? props.profileColor : '#39e58c'
 
-//TODO: create check handler
-const isTaskChecked = ref<boolean>(props.task.isCompleted)
+const onToggleComplete = () => {
+  if (!props.task.id) return
+
+  emit('on-toggle-check', props.task.id, !props.task.isCompleted)
+}
 </script>
 
 <template>
   <div class="task-item-container" :style="{ '--custom-color': customColor }">
-    <div class="task-item-checker" v-if="!isTaskChecked"></div>
-    <div class="task-item-checker task-item-check" v-if="isTaskChecked">
+    <div @click="onToggleComplete" class="task-item-checker" v-if="!props.task.isCompleted"></div>
+    <div
+      @click="onToggleComplete"
+      class="task-item-checker task-item-check"
+      v-if="props.task.isCompleted"
+    >
       <CheckIcon />
     </div>
 
     <input
       class="task-item-description"
       v-model="taskDescription"
-      :disabled="!isEditing"
+      :readonly="!isEditing"
       type="text"
       :style="{ '--custom-color': customColor }"
       :class="{ 'description-editing': isEditing }"
+      @click="!isEditing && onToggleComplete()"
     />
 
     <div class="task-item-buttons-container">
@@ -75,7 +89,7 @@ const isTaskChecked = ref<boolean>(props.task.isCompleted)
   align-items: center;
   justify-content: center;
   background-color: #0e1217;
-  height: 60px;
+  min-height: 60px;
   border-left: 5px solid var(--custom-color);
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
@@ -107,10 +121,12 @@ const isTaskChecked = ref<boolean>(props.task.isCompleted)
   border: none;
   font-size: 15px;
   flex: 1;
+  cursor: pointer;
 }
 
 .description-editing {
   color: var(--custom-color);
+  cursor: auto;
 }
 
 .task-item-buttons-container {

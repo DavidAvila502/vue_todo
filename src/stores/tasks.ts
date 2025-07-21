@@ -1,6 +1,6 @@
 import type { Task } from '@/types/types'
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { reactive, watch } from 'vue'
 
 export const useTasksStore = defineStore('tasks', () => {
   const allTaskStored = localStorage.getItem('all-tasks')
@@ -13,65 +13,69 @@ export const useTasksStore = defineStore('tasks', () => {
     console.warn(`Error: ${(e as Error).message}`)
   }
 
-  const allTasks = ref<Record<number, Task[]>>(allTasksParsedData ?? {})
+  const allTasks = reactive<Record<number, Task[]>>(allTasksParsedData ?? {})
 
   function createTask(newTask: Task, profileId: number) {
-    if (!allTasks.value[profileId]) {
-      allTasks.value[profileId] = []
+    if (!allTasks[profileId]) {
+      allTasks[profileId] = []
     }
 
-    const listSize = allTasks.value[profileId].length
-    const lastTask: Task | undefined = allTasks.value[profileId][listSize - 1]
+    const listSize = allTasks[profileId].length
+    const lastTask: Task | undefined = allTasks[profileId][listSize - 1]
     const lastID: number | undefined = lastTask ? lastTask.id : undefined
 
     if (!lastID) {
       newTask.id = 1
-      allTasks.value[profileId].push(newTask)
+      allTasks[profileId].push(newTask)
       return
     }
 
     newTask.id = lastID + 1
-    allTasks.value[profileId].push(newTask)
+    allTasks[profileId].push(newTask)
   }
 
   function deleteTask(taskId: number, profileId: number) {
-    const tasks = allTasks.value[profileId]
+    const tasks = allTasks[profileId]
     if (!tasks) return
-    allTasks.value[profileId] = tasks.filter((t) => t.id !== taskId)
+    allTasks[profileId] = tasks.filter((t) => t.id !== taskId)
   }
 
   function completeTask(taskId: number, profileId: number) {
-    const tasks = allTasks.value[profileId]
+    const tasks = allTasks[profileId]
     if (!tasks) return
     const task = tasks.find((t) => t.id === taskId)
     if (task) task.isCompleted = true
   }
 
   function unCompleteTask(taskId: number, profileId: number) {
-    const tasks = allTasks.value[profileId]
+    const tasks = allTasks[profileId]
     if (!tasks) return
     const task = tasks.find((t) => t.id == taskId)
     if (task) task.isCompleted = false
   }
 
   function updateTaskDescription(taskDescription: string, taskId: number, profileId: number) {
-    const tasks = allTasks.value[profileId]
+    const tasks = allTasks[profileId]
     if (!tasks) return
 
-    const task = allTasks.value[profileId].find((currentT) => currentT.id == taskId)
+    const task = allTasks[profileId].find((currentT) => currentT.id == taskId)
     if (!task) return
 
     task.description = taskDescription
   }
 
   function getTasksFromProfile(profileId: number): Task[] {
-    const tasks = allTasks.value[profileId]
-    if (!tasks) return []
-    return tasks
+    if (!profileId) return []
+
+    if (!allTasks[profileId]) {
+      allTasks[profileId] = []
+    }
+
+    return allTasks[profileId]
   }
 
   watch(
-    allTasks.value,
+    allTasks,
     (newTasksData) => {
       if (!newTasksData) {
         localStorage.removeItem('all-tasks')
